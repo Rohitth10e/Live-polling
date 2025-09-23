@@ -45,7 +45,7 @@ setInterval(async () => {
   } catch (err) {
     console.error("Error in poll expiration check:", err);
   }
-}, 5000);
+}, 60000);
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>{
