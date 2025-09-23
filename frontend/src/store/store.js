@@ -1,6 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import pollReducer from './pollSlice';
 
-export const store = configureStore({
-    poll:pollReducer,
-})
+const store = configureStore({
+  reducer: {
+    poll: pollReducer,
+  },
+});
+
+export default store;

@@ -1,7 +1,14 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import RoleSelection from "./pages/RoleSelection";
+
 function App() {
-  return(
-    <div className='text-blue-500 bg-zinc-900'>app</div>
-  )
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<RoleSelection />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
