@@ -8,7 +8,8 @@ const answerSchema = new mongoose.Schema({
 
 const pollSchema = new mongoose.Schema({
     question: { type: String, required: true },
-    options: { type: [String], required: true },
+    options: [{type: String, required: true }],
+    correctOption: { type: String },
     answers: { type: [answerSchema], default: [] },
     createdAt: { type: Date, default: Date.now },
     createdBy: { type: String, required: true },
@@ -16,4 +17,4 @@ const pollSchema = new mongoose.Schema({
     expiresAt: { type: Date }
 });
 
-module.exports = mongoose.model("Poll", pollSchema);
+export default mongoose.model("Poll", pollSchema);
