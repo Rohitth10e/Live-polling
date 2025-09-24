@@ -14,3 +14,13 @@
   font-optical-sizing: auto;
   font-style: normal;
 }
+
+.custom-toast {
+  background-color: #F2F2F2; /* lightGray */
+  color: #373737; /* darkGray */
+  border-left: 5px solid #7765DA; /* primaryPurple */
+}
+
+.custom-toast-body {
+  font-family: 'Inter', sans-serif;
+}
