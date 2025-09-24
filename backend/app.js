@@ -19,18 +19,49 @@ app.use("/api/polls", pollRoutes);
 
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors: {
-        origin: "http://localhost:5173",
-        methods: ["GET", "POST"]
-    }
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
 });
 
-io.on("connection", (socket)=>{
-    console.log("something got connected: ", socket?.id);
+let participants = [];
 
-    socket.on("disconnect", ()=>{
-        console.log("something got disconnected: ", socket?.id);
-    });
+io.on("connection", (socket) => {
+  console.log("something got connected: ", socket?.id);
+
+  socket.on("student_join", (data) => {
+    const newUser = { id: socket.id, name: data.name, role: "student" };
+    if (!participants.find(p => p.id === socket.id)) {
+      participants.push(newUser);
+    }
+    console.log("new participant joined: ", newUser, " total members: ", participants.length);
+    io.emit("update_participants", participants);
+  })
+
+  socket.on("teacher_join", () => {
+    const newUser = { id: socket.id, name: "teacher", role: "teacher" };
+    if (!participants.some(p => p.role === "teacher")) {
+      participants.push(newUser);
+    }
+    console.log('Teacher joined | Total participants:', participants.length);
+    io.emit("update_participants", participants);
+  })
+
+  socket.on("kick_student", (studentId) => {
+    const studentSocket = io.sockets.sockets.get(studentId);
+    if (studentSocket) {
+      socket.emit("kicked")
+      studentSocket.disconnect(true);
+    }
+  })
+
+  socket.on("disconnect", () => {
+    console.log("something got disconnected: ", socket?.id);
+    participants = participants.filter(p => p.id !== socket.id);
+    console.log('A user left. Total participants:', participants.length);
+    io.emit("update_participants", participants);
+  });
 })
 
 setInterval(async () => {
@@ -49,11 +80,11 @@ setInterval(async () => {
 }, 60000);
 
 mongoose.connect(process.env.MONGO_URI)
-.then(()=>{
-    server.listen(PORT, ()=>{console.log(`connected to db & server is running on port ${PORT}`)});
-})
-.catch((err)=>{
+  .then(() => {
+    server.listen(PORT, () => { console.log(`connected to db & server is running on port ${PORT}`) });
+  })
+  .catch((err) => {
     console.log(err);
-})
+  })
 
 export default io;
