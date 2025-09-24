@@ -7,6 +7,7 @@ import EnterName from '../components/student/EnterName';
 import api from '../api/axios';
 import Results from '../components/student/Results';
 import ActivePollView from '../components/student/ActivePollView';
+import { toast } from 'react-toastify';
 
 function StudentPage() {
 
@@ -31,7 +32,7 @@ function StudentPage() {
             setHasVoted(true)
         } catch (err) {
             console.error("something went wrong: ", err)
-            alert(err.response?.data?.error || "could not submit answer")
+            toast.error("could not submit answer")
         }
     }
 

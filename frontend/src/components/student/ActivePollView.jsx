@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 function ActivePollView({ poll, onAnswerSubmit }) {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -34,7 +35,7 @@ function ActivePollView({ poll, onAnswerSubmit }) {
         if (selectedOption) {
             onAnswerSubmit(selectedOption);
         } else {
-            alert("Please select an option before submitting.");
+            toast.warn("Please select an option before submitting.")
         }
     };
 

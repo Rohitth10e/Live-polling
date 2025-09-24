@@ -30,14 +30,21 @@ let participants = [];
 io.on("connection", (socket) => {
   console.log("something got connected: ", socket?.id);
 
-  socket.on("student_join", (data) => {
-    const newUser = { id: socket.id, name: data.name, role: "student" };
-    if (!participants.find(p => p.id === socket.id)) {
-      participants.push(newUser);
-    }
-    console.log("new participant joined: ", newUser, " total members: ", participants.length);
-    io.emit("update_participants", participants);
-  })
+   socket.on('student_join', async (data) => { // Note: async
+        const newUser = { id: socket.id, name: data.name, role: 'student' };
+        participants.push(newUser);
+        io.emit('update_participants', participants);
+        console.log(`Student ${data.name} joined. Total participants: ${participants.length}`);
+
+        try {
+            const activePoll = await Poll.findOne({ isActive: true });
+            if (activePoll) {
+                socket.emit('newPoll', activePoll);
+            }
+        } catch (err) {
+            console.error("Error sending active poll to new student:", err);
+        }
+    });
 
   socket.on("teacher_join", () => {
     const newUser = { id: socket.id, name: "teacher", role: "teacher" };

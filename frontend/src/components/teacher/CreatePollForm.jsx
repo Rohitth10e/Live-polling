@@ -1,13 +1,14 @@
 import { useState } from "react";
 import api from "../../api/axios";
 import { DashBoardHeader } from "../header/DashBoardHeader";
+import { toast } from "react-toastify";
 
 // This component now uses your original Figma-based design.
 export default function CreatePollForm() {
     const [question, setQuestion] = useState("");
     const [options, setOptions] = useState([{ text: "" }, { text: "" }]);
     const [correctOptionIndex, setCorrectOptionIndex] = useState(null);
-    const [timeLimit, setTimeLimit] = useState(60);
+    const [timeLimit, setTimeLimit] = useState(60); // State to hold the selected time limit
     const [charCount, setCharCount] = useState(0);
 
     const handleOptionChange = (index, value) => {
@@ -24,7 +25,7 @@ export default function CreatePollForm() {
 
     const handleAskQuestion = async () => {
         if (!question.trim() || options.some(o => !o.text.trim()) || correctOptionIndex === null) {
-            alert("Please fill out the question, all options, and select a correct answer.");
+            toast.warn("Please fill out the question, all options, and select a correct answer.")
             return;
         }
 
@@ -34,6 +35,7 @@ export default function CreatePollForm() {
                 options: options.map(o => o.text),
                 correctOption: options[correctOptionIndex].text,
                 createdBy: "teacher",
+                // Use the timeLimit from state to calculate the expiration
                 expiresAt: new Date(Date.now() + timeLimit * 1000)
             });
             // Reset the form after successful submission
@@ -43,7 +45,7 @@ export default function CreatePollForm() {
             setCharCount(0);
         } catch (err) {
             console.error(err);
-            alert(err.response?.data?.error || "Error creating poll");
+            toast.error("Error creating poll")
         }
     };
 
@@ -54,6 +56,7 @@ export default function CreatePollForm() {
                 <div className="question-container-header flex justify-between items-center mb-6">
                     <h1 className="text-md font-semibold">Enter your question</h1>
                     <div className="relative inline-block">
+                        {/* The select element is now a controlled component */}
                         <select 
                             value={timeLimit}
                             onChange={(e) => setTimeLimit(Number(e.target.value))}

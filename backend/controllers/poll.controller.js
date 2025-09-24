@@ -8,9 +8,9 @@ export const createPoll = async (req, res) => {
         const activePoll = await Poll.findOne({ isActive: true });
         if (activePoll) return res.status(400).json({ error: "A poll is still active" });
         
-        const { question, options, createdBy, correctOption } = req.body;
+        const { question, options, createdBy, correctOption, expiresAt } = req.body;
 
-        if (!question || !options || options.length < 2 || !createdBy || !correctOption) {
+        if (!question || !options || options.length < 2 || !createdBy || !correctOption || !expiresAt) {
             return res.status(400).json({ error: "Invalid poll data" });
         }
 
@@ -19,7 +19,7 @@ export const createPoll = async (req, res) => {
             options,
             correctOption,
             createdBy,
-            expiresAt: new Date(Date.now() + 60000)
+            expiresAt: new Date(expiresAt)
         });
 
         await poll.save();
