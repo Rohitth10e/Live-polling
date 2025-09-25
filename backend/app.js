@@ -30,7 +30,7 @@ let participants = [];
 io.on("connection", (socket) => {
   console.log("something got connected: ", socket?.id);
 
-   socket.on('student_join', async (data) => { // Note: async
+   socket.on('student_join', async (data) => { 
         const newUser = { id: socket.id, name: data.name, role: 'student' };
         participants.push(newUser);
         io.emit('update_participants', participants);
@@ -55,10 +55,20 @@ io.on("connection", (socket) => {
     io.emit("update_participants", participants);
   })
 
+  socket.on("endPoll", async (pollId) => {
+  const poll = await Poll.findById(pollId);
+  if (poll && poll.isActive) {
+    poll.isActive = false;
+    await poll.save();
+
+    io.emit("pollEnded", poll); 
+  }
+});
+
   socket.on("kick_student", (studentId) => {
     const studentSocket = io.sockets.sockets.get(studentId);
     if (studentSocket) {
-      socket.emit("kicked")
+      studentSocket.emit("kicked");
       studentSocket.disconnect(true);
     }
   })
@@ -84,7 +94,7 @@ setInterval(async () => {
   } catch (err) {
     console.error("Error in poll expiration check:", err);
   }
-}, 60000);
+}, 1000);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
