@@ -8,6 +8,7 @@ import api from '../api/axios';
 import Results from '../components/student/Results';
 import ActivePollView from '../components/student/ActivePollView';
 import { toast } from 'react-toastify';
+import KickedOutView from '../components/student/KickoutView';
 
 function StudentPage() {
 
