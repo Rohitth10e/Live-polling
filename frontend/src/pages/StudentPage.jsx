@@ -8,7 +8,7 @@ import api from '../api/axios';
 import Results from '../components/student/Results';
 import ActivePollView from '../components/student/ActivePollView';
 import { toast } from 'react-toastify';
-import KickedoutView from '../components/student/KickoutView';
+import KickoutView from '../components/student/KickoutView';
 
 function StudentPage() {
 
@@ -80,7 +80,7 @@ function StudentPage() {
     }, [dispatch, studentName, wasKicked])
 
     if (wasKicked) {
-        return <KickedoutView />;
+        return <KickoutView />;
     }
 
     if (!studentName) {
