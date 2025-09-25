@@ -17,3 +17,4 @@ function KickoutView() {
 }
 
 export default KickoutView;
+
